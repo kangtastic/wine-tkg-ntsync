@@ -15,7 +15,13 @@ jobs:
       - name: Compilation
         run: |
           sudo dnf -y -q upgrade --refresh
+          # ntsync.h from kernel-headers may be broken, overwrite it ourselves
+          sudo dnf -y install kernel-headers
+          sudo curl -o /usr/include/linux/ntsync.h https://raw.githubusercontent.com/zen-kernel/zen-kernel/6.8/main/include/uapi/linux/ntsync.h
           cd wine-tkg-git 
+          sed -i 's/ntsync="false"/ntsync="true"/' customization.cfg
+          sed -i 's/esync="true"/esync="false"/' customization.cfg
+          sed -i 's/fsync="true"/fsync="false"/' customization.cfg
           sed -i 's/_NOLIB32="false"/_NOLIB32="wow64"/' wine-tkg-profiles/advanced-customization.cfg
           echo '_ci_build="true"' >> customization.cfg
           touch tarplz

@@ -1,0 +1,46 @@
+# cf. https://github.com/marketplace/actions/upstream-sync
+
+name: 'Upstream Sync'
+
+on:
+  schedule:
+    - cron:  '0 * * * *'
+
+  workflow_dispatch:
+    inputs:
+      sync_test_mode:
+        description: 'Fork Sync Test Mode'
+        type: boolean
+        default: false
+
+jobs:
+  sync_latest_from_upstream:
+    runs-on: ubuntu-latest
+    name: Sync latest commits from upstream repo
+
+    steps:
+    - name: Checkout target repo
+      uses: actions/checkout@v4
+
+    - name: Sync upstream changes
+      id: sync
+      uses: aormsby/Fork-Sync-With-Upstream-action@v3.4.1
+      with:
+        target_sync_branch: master
+        target_repo_token: ${{ secrets.GITHUB_TOKEN }}
+        upstream_sync_branch: master
+        upstream_sync_repo: Frogging-Family/wine-tkg-git
+        test_mode: ${{ inputs.sync_test_mode }}
+        git_config_user: ${{ secrets.GIT_CONFIG_USER }}
+        git_config_email: ${{ secrets.GIT_CONFIG_EMAIL }}
+
+    - name: New commits found
+      if: steps.sync.outputs.has_new_commits == 'true'
+      run: echo "New commits were found to sync."
+
+    - name: No new commits
+      if: steps.sync.outputs.has_new_commits == 'false'
+      run: echo "There were no new commits."
+
+    - name: Show value of 'has_new_commits'
+      run: echo ${{ steps.sync.outputs.has_new_commits }}

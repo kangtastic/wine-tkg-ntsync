@@ -16,7 +16,7 @@ jobs:
         run: |
           echo -e "[multilib]\nInclude = /etc/pacman.d/mirrorlist" >> /etc/pacman.conf
           pacman -Syu --noconfirm base-devel sudo lib32-jack2
-          curl -o /usr/include/linux/ntsync.h https://raw.githubusercontent.com/zen-kernel/zen-kernel/6.8/main/include/uapi/linux/ntsync.h
+          curl -o /usr/include/linux/ntsync.h https://raw.githubusercontent.com/zen-kernel/zen-kernel/6.12/main/include/uapi/linux/ntsync.h
           useradd user -G wheel && echo "user ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
           chown user -R ..
           chown user -R /tmp

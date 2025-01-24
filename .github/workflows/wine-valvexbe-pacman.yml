@@ -20,6 +20,9 @@ jobs:
           chown user -R . && cd wine-tkg-git
           sed -i 's/LOCAL_PRESET=""/LOCAL_PRESET="valve-exp-bleeding"/' customization.cfg
           sed -i 's/wayland_driver="false"/wayland_driver="true"/' customization.cfg
+          sed -i 's/ntsync="false"/ntsync="true"/' proton-tkg.cfg
+          sed -i 's/esync="true"/esync="false"/' proton-tkg.cfg
+          sed -i 's/fsync="true"/fsync="false"/' proton-tkg.cfg
           su user -c "yes|PKGDEST=/tmp/wine-tkg makepkg --noconfirm -s"
 
       - name: Archive the artifacts
